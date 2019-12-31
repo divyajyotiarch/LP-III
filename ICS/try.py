@@ -9,12 +9,12 @@ def string2bits(s=''):
 def bits2string(b=None):
     return ''.join([chr(int(x, 2)) for x in b])
 
-plainTxt = input("Enter plaintext: ")
-b = string2bits(plainTxt)
+text = input("Enter plaintext: ")
+b = string2bits(text)
 print(b)
 
 #plainTxt = list(map(int,input("Enter 8bit plain text: ").split(" ")))
-inputKey = list(map(int,input("Enter 10bit input key: ").split(" ")))
+inputKey = list(map(int,input("Enter 10bit input key: ")))
 
 P8 = [5,2,6,3,7,4,9,8]
 IP = [1,5,2,0,3,7,4,6]
@@ -66,15 +66,6 @@ key2 = pcBox(P8,shift3)
 print("P8(Shift3(P10(K))) --> KEY 2: ")
 print(key2)
 
-
-initP = pcBox(IP,plainTxt)
-print("IP(P): ")
-print(initP)
-
-L = initP[0:4]
-R = initP[4:8]
-
-
 def xoring(key,exp):
 	xorVal = []
 	for i in range(0,8):
@@ -108,15 +99,7 @@ def F(R,k):
 	col2 = S2[1]*2+S2[2]
 	return sbox1[row1][col1]+' '+sbox2[row2][col2]
 	
-#output of F(p,k) goes into P4 permutation
 
-#4 bit output of Sboxes
-finalS1 = list(map(int,F(R,key1).split(" ")))
-print("SBoxes(E/P(R) xor key1): ",finalS1)
-permS1 = pcBox(P4,finalS1)
-
-print("P4(SBoxes(E/P(R) xor key1): ")
-print(permS1)
 		
 #xoring L and F(R,k1)
 def funcFk(L,S,R):
@@ -125,35 +108,60 @@ def funcFk(L,S,R):
 		xorVal.append(L[i]^S[i])
 	return R,xorVal
 
-#round 1
-#after switching
-L1,R1 = funcFk(L,permS1,R)
-print("L and R after round 1")
-print(L1)
-print(R1)
+
+def execute(plainTxt):
+	initP = pcBox(IP,plainTxt)
+	print("IP(P): ")
+	print(initP)
+
+	L = initP[0:4]
+	R = initP[4:8]
+
+	#output of F(p,k) goes into P4 permutation
+
+	#4 bit output of Sboxes
+	finalS1 = list(map(int,F(R,key1).split(" ")))
+	print("SBoxes(E/P(R) xor key1): ",finalS1)
+	permS1 = pcBox(P4,finalS1)
+
+	print("P4(SBoxes(E/P(R) xor key1): ")
+	print(permS1)
+
+	#round 1
+	#after switching
+	L1,R1 = funcFk(L,permS1,R)
+	print("L and R after round 1")
+	print(L1)
+	print(R1)
 	
-#round 2 using key2 and L1,R1
-finalS2 = list(map(int,F(R1,key2).split(" ")))
-print("SBoxes(E/P(R) xor key2): ",finalS2)
+	#round 2 using key2 and L1,R1
+	finalS2 = list(map(int,F(R1,key2).split(" ")))
+	print("SBoxes(E/P(R) xor key2): ",finalS2)
 
-permS2 = pcBox(P4,finalS2)
-print("P4(SBoxes(E/P(R) xor key2): ")
-print(permS2)
+	permS2 = pcBox(P4,finalS2)
+	print("P4(SBoxes(E/P(R) xor key2): ")
+	print(permS2)
 
-L2,R2 = funcFk(L1,permS2,R1)
+	L2,R2 = funcFk(L1,permS2,R1)
 
-#keep the xored value as it is
-print("After Round2: ")
-print(L2)
-print(R2)
-#p2 = L2+R2
-p2 = R2+L2
+	#keep the xored value as it is
+	print("After Round2: ")
+	print(L2)
+	print(R2)
+	#p2 = L2+R2
+	p2 = R2+L2
+	cTxt = pcBox(IP_1,p2)
+	return cTxt
 
-cipherTxt = pcBox(IP_1,p2)
+cipherTxt=[]
+for x in b:
+	plainTxt = list(map(int,x))
+	cTxt = execute(plainTxt)
+	cipherTxt.append(cTxt)
 print("Cipher: ")
 print(cipherTxt)
 
-#decryption
+#decryption ---------------------------------------------------------
 print("Decryption")
 initC = pcBox(IP,cipherTxt)
 print("IP(C): ")

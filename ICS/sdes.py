@@ -2,7 +2,18 @@
 Refer Sbox1 and Sbox2 
 http://mercury.webster.edu/aleshunas/COSC%205130/G-SDES.pdf
 '''
-plainTxt = list(map(int,input("Enter 8bit plain text: ").split(" ")))
+
+def string2bits(s=''):
+    return [bin(ord(x))[2:].zfill(8) for x in s]
+
+def bits2string(b=None):
+    return ''.join([chr(int(x, 2)) for x in b])
+
+text = input("Enter plaintext: ")
+b = string2bits(text)
+print(b)
+
+#plainTxt = list(map(int,input("Enter 8bit plain text: ").split(" ")))
 inputKey = list(map(int,input("Enter 10bit input key: ").split(" ")))
 
 P8 = [5,2,6,3,7,4,9,8]
@@ -114,6 +125,7 @@ def funcFk(L,S,R):
 		xorVal.append(L[i]^S[i])
 	return R,xorVal
 
+#round 1
 #after switching
 L1,R1 = funcFk(L,permS1,R)
 print("L and R after round 1")
@@ -140,8 +152,45 @@ p2 = R2+L2
 cipherTxt = pcBox(IP_1,p2)
 print("Cipher: ")
 print(cipherTxt)
-	
-	
+
+#decryption ---------------------------------------------------------
+print("Decryption")
+initC = pcBox(IP,cipherTxt)
+print("IP(C): ")
+print(initC)
+L = initC[0:4]
+R = initC[4:8]
+
+finalS1 = list(map(int,F(R,key2).split(" ")))
+#print("SBoxes(E/P(R) xor key2): ",finalS1)
+permS1 = pcBox(P4,finalS1)
+#print("P4(SBoxes(E/P(R) xor key2): ")
+print(permS1)
+L1,R1 = funcFk(L,permS1,R)
+print("L and R after round 1")
+print(L1)
+print(R1)
+
+#round 2 using key2 and L1,R1
+finalS2 = list(map(int,F(R1,key1).split(" ")))
+#print("SBoxes(E/P(R) xor key1): ",finalS2)
+
+permS2 = pcBox(P4,finalS2)
+#print("P4(SBoxes(E/P(R) xor key1): ")
+print(permS2)
+
+L2,R2 = funcFk(L1,permS2,R1)
+
+#keep the xored value as it is
+print("After Round2: ")
+print(L2)
+print(R2)
+#p2 = L2+R2
+p2 = R2+L2
+
+pTxt = pcBox(IP_1,p2)
+print("Plaintext: ")
+print(pTxt)	
 
 
 
