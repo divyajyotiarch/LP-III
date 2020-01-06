@@ -1,0 +1,28 @@
+digraph Tree {
+node [shape=box] ;
+0 [label="Age_21-35 <= 0.5\ngini = 0.459\nsamples = 14\nvalue = [5, 9]\nclass = NO"] ;
+1 [label="Gender_Female <= 0.5\ngini = 0.5\nsamples = 10\nvalue = [5, 5]\nclass = YES"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="Age_<21 <= 0.5\ngini = 0.32\nsamples = 5\nvalue = [4, 1]\nclass = YES"] ;
+1 -> 2 ;
+3 [label="Marital Status_Single <= 0.5\ngini = 0.5\nsamples = 2\nvalue = [1, 1]\nclass = YES"] ;
+2 -> 3 ;
+4 [label="gini = 0.0\nsamples = 1\nvalue = [1, 0]\nclass = YES"] ;
+3 -> 4 ;
+5 [label="gini = 0.0\nsamples = 1\nvalue = [0, 1]\nclass = NO"] ;
+3 -> 5 ;
+6 [label="gini = 0.0\nsamples = 3\nvalue = [3, 0]\nclass = YES"] ;
+2 -> 6 ;
+7 [label="Age_<21 <= 0.5\ngini = 0.32\nsamples = 5\nvalue = [1, 4]\nclass = NO"] ;
+1 -> 7 ;
+8 [label="Marital Status_Single <= 0.5\ngini = 0.444\nsamples = 3\nvalue = [1, 2]\nclass = NO"] ;
+7 -> 8 ;
+9 [label="gini = 0.0\nsamples = 1\nvalue = [1, 0]\nclass = YES"] ;
+8 -> 9 ;
+10 [label="gini = 0.0\nsamples = 2\nvalue = [0, 2]\nclass = NO"] ;
+8 -> 10 ;
+11 [label="gini = 0.0\nsamples = 2\nvalue = [0, 2]\nclass = NO"] ;
+7 -> 11 ;
+12 [label="gini = 0.0\nsamples = 4\nvalue = [0, 4]\nclass = NO"] ;
+0 -> 12 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+}
